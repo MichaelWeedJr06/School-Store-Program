@@ -19,6 +19,7 @@ public class SchoolProgram {
         String keyPressed = "";
         String[] cartItems = new String[50];
         int[] cartQty = new int[50];
+        int cartCount = 0;
 
         while(!(keyPressed.equals("Q"))){
             System.out.println();
@@ -49,18 +50,51 @@ public class SchoolProgram {
                     if(choice.equalsIgnoreCase("Y")){
                         System.out.println("How many of the item do you wish to add to the cart?");
                         int qty = scan.nextInt();
-                        addToCart(cartItems, cartQty, itemNames[itemIndex], qty);
+                        scan.nextLine();
+                        boolean isAdded = addToCart(cartItems, cartQty, itemNames[itemIndex], qty, cartCount);
+                        if(isAdded){
+                            System.out.println("Successfully added to cart!");
+                        }else{
+                            System.out.println("Cart is full. Please check out!");
+                        }
                     }else{
                         continue;
                     }
+                }else{
+                    System.out.println("Item was not found");
                 }
+            }else if (keyPressed.equals("3")){
+                System.out.print("Please enter the item you wish to add to the cart -> ");
+                String itemName = scan.nextLine();
+                System.out.print("Please enter the amount of the item you wish to add to your cart -> ");
+                int qty = scan.nextInt();
+                scan.nextLine();
+                boolean isAdded = addToCart(cartItems, cartQty, itemName, qty, cartCount);
+                if(isAdded){
+                    System.out.println("Successfully added to cart!");
+                }else{
+                    System.out.println("Cart is full. Please check out!");
+                }
+            } else if (keyPressed.equals("4")){
 
             }
+
         }
 
     }
-static void addToCart(String[] items, int[] Qty, String item, int qty){
-
+static boolean addToCart(String[] items, int[] Qty, String item, int qty, int cartCount){
+        if(cartCount == 50){
+            return false;
+        }else {
+            if (cartCount != 0) {
+                items[cartCount + 1] = item;
+                Qty[cartCount + 1] = qty;
+            } else {
+                items[cartCount] = item;
+                Qty[cartCount] = qty;
+            }
+            return true;
+        }
 }
 static void Print_categories(String[][] categories){
     for(int i = 0; i< categories.length; i++){
