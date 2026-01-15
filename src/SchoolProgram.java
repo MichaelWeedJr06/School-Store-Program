@@ -1,7 +1,7 @@
 import java.util.Scanner;
-
+import java.util.Arrays;
 public class SchoolProgram {
-    static void main() {
+    public static void main(String[] args) {
         String[] itemNames = {"Granola", "Trail Mix", "Pizza",
                               "Water", "Gatorade", "Fruit Punch",
                               "Mechanical Pencils", "Pencils", "Pens"
@@ -34,17 +34,15 @@ public class SchoolProgram {
             System.out.print("Please choose a menu option from the drop down -> ");
             keyPressed = scan.nextLine();
             if(keyPressed.equals("1")){
-                Print_categories(categories);
+
+                Print_categories(categories, itemPrices);
             }else if (keyPressed.equals("2")){
                 System.out.print("Please enter an item you would like to search for -> ");
                 String searchItem = scan.nextLine();
-                int itemIndex = -1;
-                for(int i = 0; i < itemNames.length; i++){
-                    if(itemNames[i].equalsIgnoreCase(searchItem)){
-                        itemIndex = i;
-                    }
-                }
+                int itemIndex = find_Inventory_Index(itemNames, searchItem);
                 if(!(itemIndex == -1)){
+                    String name = itemNames[itemIndex];
+                    Print_line(name,itemPrices[itemIndex],itemStock[itemIndex]);
                     System.out.print("Would you like to add this item to the cart (Y/N) -> ");
                     String choice = scan.nextLine();
                     if(choice.equalsIgnoreCase("Y")){
@@ -76,10 +74,28 @@ public class SchoolProgram {
                     System.out.println("Cart is full. Please check out!");
                 }
             } else if (keyPressed.equals("4")){
+                view_cart(cartItems, itemPrices, cartQty, cartCount);
+            } else if (keyPressed.equals("5")) {
+                for(int i = 0; i < cartCount; i++){
 
+                }
             }
 
         }
+
+    }
+    static double sum(double...values){
+        double total = 0;
+        for(int i = 0; i < values.length; i++){
+            total += values[i];
+        }
+        return total;
+    }
+    static void view_cart(String[] items, double[] itemPrice, int[] itemQty , int cartCount){
+        for(int i = 0; i<items.length; i++){
+            System.out.printf("%s - %d -- %f\n", items[i], itemQty[i], itemPrice[i]);
+        }
+        System.out.printf("Item count: %d", cartCount);
 
     }
 static boolean addToCart(String[] items, int[] Qty, String item, int qty, int cartCount){
@@ -96,16 +112,33 @@ static boolean addToCart(String[] items, int[] Qty, String item, int qty, int ca
             return true;
         }
 }
-static void Print_categories(String[][] categories){
+static int find_Inventory_Index(String[] items, String searchName) {
+    for (int i = 0; i < items.length; i++) {
+        if (items[i].equalsIgnoreCase(searchName)) {
+            return i;
+        }
+    }
+    return -1;
+}
+static void Print_categories(String[][] categories, double[] prices){
+        int count = -1;
     for(int i = 0; i< categories.length; i++){
         for(int j = 0; j< categories[0].length; j++){
+
             if(j == 0){
                 System.out.printf("------------%s----------------\n", categories[i][j]);
                 System.out.println("-----------------------------------------------");
             }else{
-                System.out.printf("%d). %s\n", j, categories[i][j]);
+                count++;
+                Print_line(categories[i][j], prices[count]);
             }
         }
     }
+}
+static void Print_line(String name, double price){
+    System.out.printf("%s - $%f\n", name, price);
+}
+static void Print_line(String name, double price, int stock){
+    System.out.printf("%s - $%f STOCK: %d\n", name, price, stock);
 }
 }
