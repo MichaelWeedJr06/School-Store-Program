@@ -105,7 +105,7 @@ public class SchoolProgram {
                 double tax = subtotal*0.6;
                 double Total = sum(subtotal, tax);
                 System.out.printf("SUBTOTAL: $%f",subtotal);
-                System.out.printf("TAX: $%f");
+                System.out.printf("TAX: $%f",tax);
                 System.out.printf("TOTAL: $%f", Total);
 
             }
