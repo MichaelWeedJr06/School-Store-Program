@@ -76,13 +76,50 @@ public class SchoolProgram {
             } else if (keyPressed.equals("4")){
                 view_cart(cartItems, itemPrices, cartQty, cartCount);
             } else if (keyPressed.equals("5")) {
+                double[] prices = new double[cartCount];
+                System.out.println("----------------------------------------");
+                System.out.println("        Rec");
+                for(int j = 0; j < cartCount; j++){
+                    String item = cartItems[j];
+                    int itemIndex = FindIndex(itemNames, item);
+                    int stock = itemStock[itemIndex];
+                    if(cartQty[j] > stock){
+                        System.out.printf("Insufficient Stock, Item: %s, Stock: %d\n", itemNames[itemIndex], stock);
+                        return;
+                    }
+                }
                 for(int i = 0; i < cartCount; i++){
+                    String item = cartItems[i];
+                    int priceIndex = FindIndex(itemNames, item);
+                    if(priceIndex != -1) {
+                        double price = itemPrices[priceIndex];
+                        prices[i] = price;
+                        double line_total = sum(price, cartQty[i]);
+                        System.out.printf("%s - %d - $%f --- TOTAL: $%f", item, cartQty[i], price, line_total);
+                    }else{
+                        System.out.printf("Item not found: %s", item);
+                    }
 
                 }
+                double subtotal = sum(prices);
+                double tax = subtotal*0.6;
+                double Total = sum(subtotal, tax);
+                System.out.printf("SUBTOTAL: $%f",subtotal);
+                System.out.printf("TAX: $%f");
+                System.out.printf("TOTAL: $%f", Total);
+
             }
 
         }
 
+    }
+    static int FindIndex(String[] arr, String target){
+        for(int i = 0; i< arr.length; i++){
+            if(arr[i].equals(target)){
+                return i;
+            }
+        }
+        return -1;
     }
     static double sum(double...values){
         double total = 0;
