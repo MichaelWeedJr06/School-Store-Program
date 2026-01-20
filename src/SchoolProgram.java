@@ -93,7 +93,7 @@ public class SchoolProgram {
                     int priceIndex = FindIndex(itemNames, item);
                     if(priceIndex != -1) {
                         double price = itemPrices[priceIndex];
-                        prices[i] = price;
+                        prices[i] = price* cartQty[i];
                         double line_total = sum(price, cartQty[i]);
                         System.out.printf("%s - %d - $%f --- TOTAL: $%f", item, cartQty[i], price, line_total);
                     }else{
