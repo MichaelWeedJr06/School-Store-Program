@@ -94,6 +94,7 @@ public class SchoolProgram {
                     if(priceIndex != -1) {
                         double price = itemPrices[priceIndex];
                         prices[i] = price* cartQty[i];
+                        itemStock[priceIndex] -= cartQty[i];
                         double line_total = sum(price, cartQty[i]);
                         System.out.printf("%s - %d - $%f --- TOTAL: $%f", item, cartQty[i], price, line_total);
                     }else{
@@ -107,6 +108,7 @@ public class SchoolProgram {
                 System.out.printf("SUBTOTAL: $%f",subtotal);
                 System.out.printf("TAX: $%f",tax);
                 System.out.printf("TOTAL: $%f", Total);
+
 
             }
 
