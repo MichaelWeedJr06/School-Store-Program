@@ -3,17 +3,17 @@ import java.util.Arrays;
 public class SchoolProgram {
     public static void main(String[] args) {
         String[] itemNames = {"Granola", "Trail Mix", "Pizza",
-                              "Water", "Gatorade", "Fruit Punch",
-                              "Mechanical Pencils", "Pencils", "Pens"
-                             };
+                "Water", "Gatorade", "Fruit Punch",
+                "Mechanical Pencils", "Pencils", "Pens"
+        };
         String[][] categories = {{"Snacks", "Granola", "Trail Mix", "Pizza"},
-                                 {"Beverages", "Water", "Gatorade", "Fruit Punch"},
-                                 {"Writing Untencils", "Mechanical Pencils", "Pencils", "Pens"}
-                                 };
+                {"Beverages", "Water", "Gatorade", "Fruit Punch"},
+                {"Writing Untencils", "Mechanical Pencils", "Pencils", "Pens"}
+        };
         double[] itemPrices = {9.99, 8.99, 7.99,
-                               1.00, 2.00, 2.50,
-                               1.50, 1.00, 3.00
-                               };
+                1.00, 2.00, 2.50,
+                1.50, 1.00, 3.00
+        };
         int[] itemStock = {5, 10, 8, 7, 5, 4, 6, 5, 6};
         Scanner scan = new Scanner(System.in);
         String keyPressed = "";
@@ -21,7 +21,7 @@ public class SchoolProgram {
         int[] cartQty = new int[50];
         int cartCount = 0;
 
-        while(!(keyPressed.equals("Q"))){
+        while (!(keyPressed.equals("Q"))) {
             System.out.println();
             System.out.println("----MENU OPTIONS----");
             System.out.println("1.  View categories and items");
@@ -33,81 +33,82 @@ public class SchoolProgram {
             System.out.println("--------------------");
             System.out.print("Please choose a menu option from the drop down -> ");
             keyPressed = scan.nextLine();
-            if(keyPressed.equals("1")){
+            if (keyPressed.equals("1")) {
 
                 Print_categories(categories, itemPrices);
-            }else if (keyPressed.equals("2")){
+            } else if (keyPressed.equals("2")) {
                 System.out.print("Please enter an item you would like to search for -> ");
                 String searchItem = scan.nextLine();
                 int itemIndex = find_Inventory_Index(itemNames, searchItem);
-                if(!(itemIndex == -1)){
+                if (!(itemIndex == -1)) {
                     String name = itemNames[itemIndex];
-                    Print_line(name,itemPrices[itemIndex],itemStock[itemIndex]);
+                    Print_line(name, itemPrices[itemIndex], itemStock[itemIndex]);
                     System.out.print("Would you like to add this item to the cart (Y/N) -> ");
                     String choice = scan.nextLine();
-                    if(choice.equalsIgnoreCase("Y")){
+                    if (choice.equalsIgnoreCase("Y")) {
                         System.out.println("How many of the item do you wish to add to the cart?");
                         int qty = scan.nextInt();
                         scan.nextLine();
                         boolean isAdded = addToCart(cartItems, cartQty, itemNames[itemIndex], qty, cartCount);
-                        if(isAdded){
+                        if (isAdded) {
                             System.out.println("Successfully added to cart!");
-                        }else{
+                        } else {
                             System.out.println("Cart is full. Please check out!");
                         }
-                    }else{
+                    } else {
                         continue;
                     }
-                }else{
+                } else {
                     System.out.println("Item was not found");
                 }
-            }else if (keyPressed.equals("3")){
+            } else if (keyPressed.equals("3")) {
                 System.out.print("Please enter the item you wish to add to the cart -> ");
                 String itemName = scan.nextLine();
                 System.out.print("Please enter the amount of the item you wish to add to your cart -> ");
                 int qty = scan.nextInt();
                 scan.nextLine();
                 boolean isAdded = addToCart(cartItems, cartQty, itemName, qty, cartCount);
-                if(isAdded){
+                if (isAdded) {
+                    cartCount += 1;
                     System.out.println("Successfully added to cart!");
-                }else{
+                } else {
                     System.out.println("Cart is full. Please check out!");
                 }
-            } else if (keyPressed.equals("4")){
-                view_cart(cartItems, itemPrices, cartQty, cartCount);
+            } else if (keyPressed.equals("4")) {
+                view_cart(itemNames, cartItems, itemPrices, cartQty, cartCount);
             } else if (keyPressed.equals("5")) {
                 double[] prices = new double[cartCount];
                 System.out.println("----------------------------------------");
-                System.out.println("        Rec");
-                for(int j = 0; j < cartCount; j++){
+                System.out.println("        Reciept");
+                for (int j = 0; j < cartCount; j++) {
                     String item = cartItems[j];
                     int itemIndex = FindIndex(itemNames, item);
                     int stock = itemStock[itemIndex];
-                    if(cartQty[j] > stock){
+                    if (cartQty[j] > stock) {
                         System.out.printf("Insufficient Stock, Item: %s, Stock: %d\n", itemNames[itemIndex], stock);
                         return;
                     }
                 }
-                for(int i = 0; i < cartCount; i++){
+                for (int i = 0; i < cartCount; i++) {
                     String item = cartItems[i];
                     int priceIndex = FindIndex(itemNames, item);
-                    if(priceIndex != -1) {
+                    if (priceIndex != -1) {
                         double price = itemPrices[priceIndex];
-                        prices[i] = price* cartQty[i];
+                        prices[i] = price * cartQty[i];
                         itemStock[priceIndex] -= cartQty[i];
                         double line_total = sum(price, cartQty[i]);
-                        System.out.printf("%s - %d - $%f --- TOTAL: $%f", item, cartQty[i], price, line_total);
-                    }else{
-                        System.out.printf("Item not found: %s", item);
+                        System.out.printf("%s - %d - $%f --- TOTAL: $%f\n", item, cartQty[i], price, line_total);
+                    } else {
+                        System.out.printf("Item not found: %s\n", item);
                     }
 
                 }
-                double subtotal = sum(prices);
-                double tax = subtotal*0.6;
-                double Total = sum(subtotal, tax);
-                System.out.printf("SUBTOTAL: $%f",subtotal);
-                System.out.printf("TAX: $%f",tax);
-                System.out.printf("TOTAL: $%f", Total);
+                double subtotal = add(prices) ;
+                double tax = sum(subtotal, 0.6);
+                double Total = add(subtotal, tax);
+                System.out.printf("SUBTOTAL: $%f\n", subtotal);
+                System.out.printf("TAX: $%f\n", tax);
+                System.out.printf("TOTAL: $%f\n", Total);
 
 
             }
@@ -115,38 +116,64 @@ public class SchoolProgram {
         }
 
     }
-    static int FindIndex(String[] arr, String target){
-        for(int i = 0; i< arr.length; i++){
-            if(arr[i].equals(target)){
+
+    static int FindIndex(String[] arr, String target) {
+
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == null) {
+                continue;
+            }
+            if (arr[i].equals(target)) {
                 return i;
             }
         }
         return -1;
     }
-    static double sum(double...values){
+
+    static double add(double... values) {
         double total = 0;
-        for(int i = 0; i < values.length; i++){
+        for (int i = 0; i < values.length; i++) {
             total += values[i];
         }
         return total;
-    }
-    static void view_cart(String[] items, double[] itemPrice, int[] itemQty , int cartCount){
-        for(int i = 0; i<items.length; i++){
-            System.out.printf("%s - %d -- %f\n", items[i], itemQty[i], itemPrice[i]);
+}
+    static double sum(double...values){
+        double total = 0;
+        for(int i = 0; i < values.length; i++){
+            total *= values[i];
         }
-        System.out.printf("Item count: %d", cartCount);
+        return total;
+    }
+    static void view_cart(String[] itemNames,String[] items, double[] itemPrice, int[] itemQty , int Count){
+        for(int i = 0; i<Count; i++){
+           int priceIndex =  FindIndex(itemNames, items[i]);
+                System.out.printf("%s - %d -- %f\n", items[i], itemQty[i], itemPrice[priceIndex]);
+        }
+        System.out.printf("Item count: %d", Count);
 
     }
-static boolean addToCart(String[] items, int[] Qty, String item, int qty, int cartCount){
-        if(cartCount == 50){
+static boolean addToCart(String[] items, int[] Qty, String item, int qty, int Count){
+        if(Count == 50){
             return false;
         }else {
-            if (cartCount != 0) {
-                items[cartCount + 1] = item;
-                Qty[cartCount + 1] = qty;
+            if (Count != 0) {
+                int exists = FindIndex(items, item);
+                if(exists != -1){
+                    Qty[Count]+= qty;
+                }else {
+                    items[Count] = item;
+                    Qty[Count] = qty;
+                    Count += 1;
+                }
             } else {
-                items[cartCount] = item;
-                Qty[cartCount] = qty;
+                int exists = FindIndex(items, item);
+                if(exists != -1){
+                    Qty[Count]+=qty;
+                }else {
+                    items[Count] = item;
+                    Qty[Count] = qty;
+                    Count += 1;
+                }
             }
             return true;
         }
