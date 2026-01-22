@@ -49,11 +49,12 @@ public class SchoolProgram {
                         System.out.println("How many of the item do you wish to add to the cart?");
                         int qty = scan.nextInt();
                         scan.nextLine();
-                        boolean isAdded = addToCart(cartItems, cartQty, itemNames[itemIndex], qty, cartCount);
+                        boolean isAdded = addToCart(itemNames,cartItems, cartQty, itemNames[itemIndex], qty, cartCount);
                         if (isAdded) {
+                            cartCount+=1;
                             System.out.println("Successfully added to cart!");
                         } else {
-                            System.out.println("Cart is full. Please check out!");
+                            System.out.println("Error adding to the cart!");
                         }
                     } else {
                         continue;
@@ -67,12 +68,12 @@ public class SchoolProgram {
                 System.out.print("Please enter the amount of the item you wish to add to your cart -> ");
                 int qty = scan.nextInt();
                 scan.nextLine();
-                boolean isAdded = addToCart(cartItems, cartQty, itemName, qty, cartCount);
+                boolean isAdded = addToCart(itemNames,cartItems, cartQty, itemName, qty, cartCount);
                 if (isAdded) {
                     cartCount += 1;
                     System.out.println("Successfully added to cart!");
                 } else {
-                    System.out.println("Cart is full. Please check out!");
+                    System.out.println("Error adding to the cart!");
                 }
             } else if (keyPressed.equals("4")) {
                 view_cart(itemNames, cartItems, itemPrices, cartQty, cartCount);
@@ -96,19 +97,19 @@ public class SchoolProgram {
                         double price = itemPrices[priceIndex];
                         prices[i] = price * cartQty[i];
                         itemStock[priceIndex] -= cartQty[i];
-                        double line_total = sum(price, cartQty[i]);
-                        System.out.printf("%s - %d - $%f --- TOTAL: $%f\n", item, cartQty[i], price, line_total);
+                        double line_total = price * cartQty[i];
+                        System.out.printf("%s - %d - $%.2f --- TOTAL: $%.2f\n", item, cartQty[i], price, line_total);
                     } else {
                         System.out.printf("Item not found: %s\n", item);
                     }
 
                 }
                 double subtotal = add(prices) ;
-                double tax = sum(subtotal, 0.6);
+                double tax =  subtotal * 0.06;
                 double Total = add(subtotal, tax);
-                System.out.printf("SUBTOTAL: $%f\n", subtotal);
-                System.out.printf("TAX: $%f\n", tax);
-                System.out.printf("TOTAL: $%f\n", Total);
+                System.out.printf("SUBTOTAL: $%.2f\n", subtotal);
+                System.out.printf("TAX: $%.2f\n", tax);
+                System.out.printf("TOTAL: $%.2f\n", Total);
 
 
             }
@@ -137,13 +138,7 @@ public class SchoolProgram {
         }
         return total;
 }
-    static double sum(double...values){
-        double total = 0;
-        for(int i = 0; i < values.length; i++){
-            total *= values[i];
-        }
-        return total;
-    }
+
     static void view_cart(String[] itemNames,String[] items, double[] itemPrice, int[] itemQty , int Count){
         for(int i = 0; i<Count; i++){
            int priceIndex =  FindIndex(itemNames, items[i]);
@@ -152,32 +147,40 @@ public class SchoolProgram {
         System.out.printf("Item count: %d", Count);
 
     }
-static boolean addToCart(String[] items, int[] Qty, String item, int qty, int Count){
+static boolean addToCart(String[] itemList,String[] items, int[] Qty, String item, int qty, int Count){
         if(Count == 50){
+            System.out.println("Cart is full.");
             return false;
         }else {
+            int exists = FindIndex(itemList, item);
+            if(exists!=-1){
             if (Count != 0) {
-                int exists = FindIndex(items, item);
-                if(exists != -1){
+                int itemInList = FindIndex(items, item);
+                if(itemInList != -1){
                     Qty[Count]+= qty;
                 }else {
                     items[Count] = item;
                     Qty[Count] = qty;
-                    Count += 1;
                 }
             } else {
-                int exists = FindIndex(items, item);
-                if(exists != -1){
+                int itemInList = FindIndex(items, item);
+                if(itemInList != -1){
                     Qty[Count]+=qty;
                 }else {
                     items[Count] = item;
                     Qty[Count] = qty;
-                    Count += 1;
                 }
+            }{
+
+                }
+
+        }else{
+                System.out.println("Item not found.");
+                return false;
             }
-            return true;
-        }
 }
+    return true;
+    }
 static int find_Inventory_Index(String[] items, String searchName) {
     for (int i = 0; i < items.length; i++) {
         if (items[i].equalsIgnoreCase(searchName)) {
