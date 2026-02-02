@@ -37,31 +37,9 @@ public class SchoolProgram {
 
                 Print_categories(categories, itemPrices);
             } else if (keyPressed.equals("2")) {
-                System.out.print("Please enter an item you would like to search for -> ");
-                String searchItem = scan.nextLine();
-                int itemIndex = find_Inventory_Index(itemNames, searchItem);
-                if (!(itemIndex == -1)) {
-                    String name = itemNames[itemIndex];
-                    Print_line(name, itemPrices[itemIndex], itemStock[itemIndex]);
-                    System.out.print("Would you like to add this item to the cart (Y/N) -> ");
-                    String choice = scan.nextLine();
-                    if (choice.equalsIgnoreCase("Y")) {
-                        System.out.println("How many of the item do you wish to add to the cart?");
-                        int qty = scan.nextInt();
-                        scan.nextLine();
-                        boolean isAdded = addToCart(itemNames,cartItems, cartQty, itemNames[itemIndex], qty, cartCount);
-                        if (isAdded) {
-                            cartCount+=1;
-                            System.out.println("Successfully added to cart!");
-                        } else {
-                            System.out.println("Error adding to the cart!");
-                        }
-                    } else {
-                        continue;
-                    }
-                } else {
-                    System.out.println("Item was not found");
-                }
+                System.out.print("Please enter the item you would like to search for -> ");
+                String search_item = scan.nextLine();
+                SearchItem(itemNames, cartItems, cartQty,itemPrices, itemStock ,cartCount, search_item);
             } else if (keyPressed.equals("3")) {
                 System.out.print("Please enter the item you wish to add to the cart -> ");
                 String itemName = scan.nextLine();
@@ -110,6 +88,9 @@ public class SchoolProgram {
                 System.out.printf("SUBTOTAL: $%.2f\n", subtotal);
                 System.out.printf("TAX: $%.2f\n", tax);
                 System.out.printf("TOTAL: $%.2f\n", Total);
+                cartItems  = new String[50];
+                cartQty  = new int[50];
+                cartCount = 0;
 
 
             }
@@ -117,7 +98,32 @@ public class SchoolProgram {
         }
 
     }
-
+static void  SearchItem(String[] itemNames,  String[] cartItems, int[] cartQty, double[] itemPrices, int[] itemStock ,int cartCount, String searchItem){
+        Scanner scan = new Scanner(System.in);
+    int itemIndex = find_Inventory_Index(itemNames, searchItem);
+    if (!(itemIndex == -1)) {
+        String name = itemNames[itemIndex];
+        Print_line(name, itemPrices[itemIndex], itemStock[itemIndex]);
+        System.out.print("Would you like to add this item to the cart (Y/N) -> ");
+        String choice = scan.nextLine();
+        if (choice.equalsIgnoreCase("Y")) {
+            System.out.println("How many of the item do you wish to add to the cart?");
+            int qty = scan.nextInt();
+            scan.nextLine();
+            boolean isAdded = addToCart(itemNames,cartItems, cartQty, itemNames[itemIndex], qty, cartCount);
+            if (isAdded) {
+                cartCount+=1;
+                System.out.println("Successfully added to cart!");
+            } else {
+                System.out.println("Error adding to the cart!");
+            }
+        } else {
+            return;
+        }
+    } else {
+        System.out.println("Item was not found");
+    }
+}
     static int FindIndex(String[] arr, String target) {
 
         for (int i = 0; i < arr.length; i++) {
@@ -208,6 +214,6 @@ static void Print_line(String name, double price){
     System.out.printf("%s - $%f\n", name, price);
 }
 static void Print_line(String name, double price, int stock){
-    System.out.printf("%s - $%f STOCK: %d\n", name, price, stock);
+    System.out.printf("%s - $%.2f STOCK: %d\n", name, price, stock);
 }
 }
